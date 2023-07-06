@@ -95,7 +95,7 @@ export class Socket extends EventEmitter {
       }
 
       try {
-        connection = new WebSocket(this.host, null, { headers: settings.customHeaders })
+        connection = new WebSocket(this.host)
         connection.onerror = reject
       } catch (err) {
         this.logger.error(err)
@@ -146,7 +146,7 @@ export class Socket extends EventEmitter {
   onMessage = (e: any) => {
     this.lastPing = Date.now()
     const data = (e.data) ? JSON.parse(e.data) : undefined
-  
+
     this.logger.debug(data) // 👈  very useful for debugging missing responses
     if (!data) return this.logger.error(`[ddp] JSON parse error: ${e.message}`)
     this.logger.debug(`[ddp] messages received: ${e.data}`)
@@ -511,7 +511,7 @@ export class DDPDriver extends EventEmitter implements ISocket, IDriver {
   subscribeRaw = (...args: any[]): Promise<ISubscription> => {
     this.logger.info(`[DDP driver] Raw Subscribing to ${JSON.stringify(args)}`)
     return this.ddp.subscribe(...args)
-  }   
+  }
 
   subscribeNotifyAll = (): Promise< any> => {
     const topic = 'stream-notify-all'
